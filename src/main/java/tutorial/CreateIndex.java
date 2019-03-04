@@ -12,8 +12,8 @@ public class CreateIndex {
     public static void main(String[] args) {
         SearchTester tester;
         try {
-            CreateIndex indexCreator = new CreateIndex();
-            indexCreator.createIndex();
+            ImprovedIndexer improvedIndexer = new ImprovedIndexer();
+            improvedIndexer.generateIndex();
         } catch (IOException e) {
             e.printStackTrace();
         }

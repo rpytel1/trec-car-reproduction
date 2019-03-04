@@ -17,7 +17,6 @@ public class SearchTester {
     public static void main(String[] args) {
         SearchTester tester;
         try {
-            tester = new SearchTester();
             if (args[0].startsWith("-query=")) {
                 args[0] = args[0].substring(7);
                 if (args[0].contains("/")) {
@@ -27,7 +26,8 @@ public class SearchTester {
             if (args[1].startsWith("-type=")) {
                 args[1] = args[1].substring(6);
             }
-            tester.search(args[0], args[1]);
+            ImprovedSearcher improvedSearcher = new ImprovedSearcher(INDEX_DIR,args[1]);
+            improvedSearcher.search(args[0]);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {

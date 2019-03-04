@@ -14,6 +14,7 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
 
 public class Indexer {
 
@@ -34,12 +35,13 @@ public class Indexer {
 
     private Document getDocument(File file) throws IOException {
         Document document = new Document();
-
-        TextField contentField = new TextField(LuceneConstants.CONTENTS, new FileReader(file));
+        FileReader fileReader = new FileReader(file);
+        TextField contentField = new TextField(LuceneConstants.CONTENTS, fileReader);
         TextField fileNameField = new TextField(LuceneConstants.FILE_NAME,
                 file.getName(),TextField.Store.YES);
         TextField filePathField = new TextField(LuceneConstants.FILE_PATH,
                 file.getCanonicalPath(),TextField.Store.YES);
+
 
         document.add(contentField);
         document.add(fileNameField);
@@ -59,8 +61,6 @@ public class Indexer {
         File[] files = new File(dataDirPath).listFiles();
 
         for (File file : files) {
-            File fileAbsoluteFile = file.getAbsoluteFile();
-            File fileCanonicalFile = file.getCanonicalFile();
             if(!file.isDirectory()
                     && !file.isHidden()
                     && file.exists()
