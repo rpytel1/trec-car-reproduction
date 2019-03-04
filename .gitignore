@@ -192,4 +192,6 @@ buildNumber.properties
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
+lucene-example.iml
+.idea/
 trec-car-reproduction.iml
