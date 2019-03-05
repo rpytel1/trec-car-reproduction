@@ -100,10 +100,11 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
+
                     <execution>
+                        <id>make-assembly1</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
@@ -111,16 +112,37 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>
-                                        tutorial.search.SearchFromFile
-                                    </mainClass>
+                                    <mainClass>tutorial.search.SearchFromFile</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
+                            <finalName>search-file-from-file</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>make-assembly2</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>tutorial.index.CreateIndex</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <finalName>create-index</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
 

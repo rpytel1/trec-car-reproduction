@@ -21,9 +21,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static tutorial.utils.LuceneConstants.DATA_DIR;
-import static tutorial.utils.LuceneConstants.INDEX_DIR;
-
 
 public class ImprovedIndexer {
 
@@ -31,8 +28,8 @@ public class ImprovedIndexer {
 
     }
 
-    public void generateIndex() throws IOException {
-        Directory dir = FSDirectory.open(new File(INDEX_DIR).toPath());
+    public void generateIndex(String indexDir, String corpusDir) throws IOException {
+        Directory dir = FSDirectory.open(new File(indexDir).toPath());
 
 // Analyzer specifies options for text processing
         Analyzer analyzer = new Analyzer() {
@@ -70,7 +67,7 @@ public class ImprovedIndexer {
         fieldTypeText.freeze();
 
 
-        File[] files = new File(DATA_DIR).listFiles();
+        File[] files = new File(corpusDir).listFiles();
 
         for (File file : files) {
             InputStream instream = new FileInputStream(file);
