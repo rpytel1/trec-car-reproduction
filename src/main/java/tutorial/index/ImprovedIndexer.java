@@ -1,4 +1,4 @@
-package tutorial;
+package tutorial.index;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
@@ -21,8 +21,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static tutorial.LuceneConstants.DATA_DIR;
-import static tutorial.LuceneConstants.INDEX_DIR;
+import static tutorial.utils.LuceneConstants.DATA_DIR;
+import static tutorial.utils.LuceneConstants.INDEX_DIR;
 
 
 public class ImprovedIndexer {

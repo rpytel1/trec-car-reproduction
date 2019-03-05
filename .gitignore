@@ -200,5 +200,4 @@ test200_queries.json
 test200-train
 test200_first_results5.txt
 indexer/
-index/
 hierarchical_test200_corpus_v2/

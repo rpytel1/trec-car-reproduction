@@ -1,10 +1,10 @@
-package tutorial;
+package tutorial.search;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import java.io.IOException;
 
-import static tutorial.LuceneConstants.INDEX_DIR;
+import static tutorial.utils.LuceneConstants.INDEX_DIR;
 
 public class SearchTester {
 

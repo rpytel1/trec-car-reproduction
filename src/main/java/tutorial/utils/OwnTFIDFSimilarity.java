@@ -1,4 +1,4 @@
-package tutorial;
+package tutorial.utils;
 
 import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.search.similarities.SimilarityBase;

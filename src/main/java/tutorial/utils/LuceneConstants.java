@@ -1,4 +1,4 @@
-package tutorial;
+package tutorial.utils;
 
 public class LuceneConstants {
     public static final String CONTENTS = "contents";

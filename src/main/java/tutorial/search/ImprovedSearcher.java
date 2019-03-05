@@ -1,4 +1,4 @@
-package tutorial;
+package tutorial.search;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
@@ -17,11 +17,12 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import tutorial.utils.LuceneConstants;
 
 import java.io.File;
 import java.io.IOException;
 
-import static tutorial.LuceneConstants.INDEX_DIR;
+import static tutorial.utils.LuceneConstants.INDEX_DIR;
 
 public class ImprovedSearcher {
     IndexSearcher indexSearcher;
