@@ -16,7 +16,7 @@ public class SearchFromFile {
     public static void main(String[] args) throws IOException, ParseException {
 
 
-        File file = new File("/Users/rafalpytel/Desktop/TU Delft/Q3&Q4/Information Retriveal/project/trec-car-reproduction/test200_queries.json");
+        File file = new File(args[0]);
         InputStream instream = new FileInputStream(file);
         Scanner s = new Scanner(instream).useDelimiter("\\A");
         String fileText = s.hasNext() ? s.next() : "";
@@ -47,7 +47,7 @@ public class SearchFromFile {
                 query = query.replace("#combine(","");
                 query = query.substring(0,query.length()-1);
             }
-            QueryStruct queryStruct = new QueryStruct(jsonObject.getInt("number"),query);
+            QueryStruct queryStruct = new QueryStruct(jsonObject.getString("number"),query);
             queries.add(queryStruct);
         }
         return queries;

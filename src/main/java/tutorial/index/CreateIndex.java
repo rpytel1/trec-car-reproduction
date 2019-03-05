@@ -1,7 +1,5 @@
 package tutorial.index;
 
-import tutorial.search.SearchTester;
-
 import java.io.IOException;
 
 
