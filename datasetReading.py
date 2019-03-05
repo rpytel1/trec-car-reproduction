@@ -55,7 +55,7 @@ def search_paras(p, id):
     if isinstance(p, Para):
         if p.paragraph.para_id not in id_set:
             id_set.append(p.paragraph.para_id)
-            fp = r'hierarchical_test200_corpus_v2\paraDoc' + str(i) + '.trectext'
+            fp = r'hierarchical_test200_corpus_v2/paraDoc' + str(i) + '.trectext'
             wf = open(fp, 'wb')
             wf.write(b"<DOC>\n")
             wf.write(b"<DOCNO>")
@@ -217,7 +217,7 @@ def create_queries(file):
             j+=1
     json.dump(data, wf)
 
-file = r'test200-train\train.pages.cbor'
+file = r'test200-train/train.pages.cbor'
 #file = r'benchmarkY1\benchmarkY1-train\fold-0-train.pages.cbor-outlines.cbor'
 #parse_annotations(file)
 #make_article_corpus(file)
@@ -225,11 +225,11 @@ file = r'test200-train\train.pages.cbor'
 make_hierarchical_corpus(file)
 #make_toplevel_corpus(file)
 #create_queries(file)
-file = r'test200-train\train.pages.cbor-paragraphs.cbor'
+file = r'test200-train/train.pages.cbor-paragraphs.cbor'
 #file = r'benchmarkY1\benchmarkY1-train\fold-0-train.pages.cbor-paragraphs.cbor'
 #parse_paragraphs(file)
 #file = r'benchmarkY1\benchmarkY1-train\fold-0-train.pages.cbor'
-file = r'test200-train\train.pages.cbor'
+file = r'test200-train/train.pages.cbor'
 #find_num_paras(file)
 #create_queries(file)
 

@@ -12,7 +12,7 @@ def retrieve_paragraph(file):
 with open('test200_first_results5.txt') as fp:
     lines = fp.readlines()
 content = [x.split() for x in lines]
-file = r'test200-train\train.pages.cbor-paragraphs.cbor'
+file = r'test200-train/train.pages.cbor-paragraphs.cbor'
 my_ranking = []
 i = 0
 d = retrieve_paragraph(file)
@@ -24,7 +24,7 @@ for c in content:
     print(i)
     i+=1
 print('out')
-file = r'test200-train\train.pages.cbor'
+file = r'test200-train/train.pages.cbor'
 start = 0
 with open('runfile', mode='w', encoding='UTF-8') as writer:
     for page in iter_annotations(open(file, 'rb')):
