@@ -10,7 +10,6 @@ public class SearchTester {
 
 
     public static void main(String[] args) {
-        SearchTester tester;
         try {
             if (args[0].startsWith("-query=")) {
                 args[0] = args[0].substring(7);
@@ -22,10 +21,8 @@ public class SearchTester {
                 args[1] = args[1].substring(6);
             }
             ImprovedSearcher improvedSearcher = new ImprovedSearcher(INDEX_DIR, args[1]);
-            improvedSearcher.search(args[0]);
+//            improvedSearcher.search(args[0]);
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         }
     }

@@ -9,7 +9,6 @@ public class CreateIndex {
 
 
     public static void main(String[] args) {
-        SearchTester tester;
         try {
             ImprovedIndexer improvedIndexer = new ImprovedIndexer();
             improvedIndexer.generateIndex();

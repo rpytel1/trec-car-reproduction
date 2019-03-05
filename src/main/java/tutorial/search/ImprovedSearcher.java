@@ -17,12 +17,11 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import tutorial.QueryStruct;
 import tutorial.utils.LuceneConstants;
 
 import java.io.File;
 import java.io.IOException;
-
-import static tutorial.utils.LuceneConstants.INDEX_DIR;
 
 public class ImprovedSearcher {
     IndexSearcher indexSearcher;
@@ -45,10 +44,15 @@ public class ImprovedSearcher {
         parser = new QueryParser(field, analyzer); // a query parser that transforms a text string into Lucene's query object
 
         // Okay, now let's open an index and search for documents
-        Directory dir = FSDirectory.open(new File(INDEX_DIR).toPath());
+        Directory dir = FSDirectory.open(new File(indexDirectoryPath).toPath());
         IndexReader index = DirectoryReader.open(dir);
         indexSearcher = new IndexSearcher(index);
         configure(similarityName);
+    }
+
+    public ImprovedSearcher(String indexDirectoryPath, String similarityName, int requested) throws IOException {
+        this(indexDirectoryPath, similarityName);
+        QUERY_LIMIT = requested;
     }
 
     private void configure(String similarityName) {
@@ -68,22 +72,20 @@ public class ImprovedSearcher {
         }
     }
 
-    public void search(String queryString) throws ParseException, IOException {
+    public void search(QueryStruct queryStruct) throws ParseException, IOException {
 
-        Query query = parser.parse(queryString); // this is Lucene's query object
+        Query query = parser.parse(QueryParser.escape(queryStruct.getText()));
 
 
-        int top = 10;
-        TopDocs docs = indexSearcher.search(query, top);
+        TopDocs docs = indexSearcher.search(query, QUERY_LIMIT);
 
-        System.out.println("Rank DocNo Score Title");
         int rank = 1;
         for (ScoreDoc scoreDoc : docs.scoreDocs) {
             int docid = scoreDoc.doc;
             double score = scoreDoc.score;
             Document document = indexSearcher.doc(scoreDoc.doc);
 
-            System.out.println(rank + "-" + score + "-" + document.get("title"));
+            System.out.println(queryStruct.getNumber()+" " + "Q0"+" "+ document.get("docno")+" "+rank + " " + score + " " + "lucene");
             rank++;
         }
     }
