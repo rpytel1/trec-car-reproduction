@@ -201,3 +201,6 @@ test200-train
 test200_first_results5.txt
 indexer/
 hierarchical_test200_corpus_v2/
+/results/
+runfile_paragraph
+runfile_paragraph_lucene

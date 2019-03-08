@@ -19,6 +19,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import tutorial.QueryStruct;
 import tutorial.utils.LuceneConstants;
+import tutorial.utils.OwnTFIDFSimilarity;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.io.IOException;
 public class ImprovedSearcher {
     IndexSearcher indexSearcher;
     int QUERY_LIMIT = LuceneConstants.CLASSIC_SEARCH_LIMIT;
+    float K1;
     QueryParser parser;
 
     public ImprovedSearcher(String indexDirectoryPath, String similarityName) throws IOException {
@@ -50,15 +52,16 @@ public class ImprovedSearcher {
         configure(similarityName);
     }
 
-    public ImprovedSearcher(String indexDirectoryPath, String similarityName, int requested) throws IOException {
+    public ImprovedSearcher(String indexDirectoryPath, String similarityName, int requested, float k1) throws IOException {
         this(indexDirectoryPath, similarityName);
         QUERY_LIMIT = requested;
+        this.K1 = k1;
     }
 
     private void configure(String similarityName) {
         switch (similarityName) {
             case "tfidf": {
-                ClassicSimilarity classicSimilarity = new ClassicSimilarity();
+                OwnTFIDFSimilarity classicSimilarity = new OwnTFIDFSimilarity();
                 indexSearcher.setSimilarity(classicSimilarity);
                 break;
             }
@@ -66,7 +69,7 @@ public class ImprovedSearcher {
                 QUERY_LIMIT = LuceneConstants.MAX_SEARCH;
             }
             default: {
-                BM25Similarity bm25Similarity = new BM25Similarity();
+                BM25Similarity bm25Similarity = new BM25Similarity(K1, 0.75f);
                 indexSearcher.setSimilarity(bm25Similarity);
             }
         }
