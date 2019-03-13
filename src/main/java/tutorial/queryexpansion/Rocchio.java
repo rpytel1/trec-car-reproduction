@@ -69,8 +69,7 @@ public class Rocchio {
         for (Map.Entry<String, Float> entry : finalQueryTerms.subList(0, finalQueryTerms.size() > (termLimit + 1) ? termLimit + 1 : finalQueryTerms.size()))
             queryString.append(entry.getKey()).append(' ');
 
-        System.out.println(queryString.toString());
-        queryStruct.setText(queryStruct.getText() + " " + queryString.toString());
+        queryStruct.setText(queryString.toString());
 
         return queryStruct;
     }

@@ -55,11 +55,8 @@ public class ImprovedIndexer {
         for (File file : files) {
             InputStream instream = new FileInputStream(file);
             Scanner s = new Scanner(instream).useDelimiter("\\A");
-            StringBuilder stringBuilder = new StringBuilder();
-            while (s.hasNextLine()) {
-                stringBuilder.append(s.nextLine());
-            }
-            String corpusText = stringBuilder.toString();
+            String corpusText = s.hasNext() ? s.next() : "";
+            instream.close();
 
             Pattern pattern = Pattern.compile(
                     "<DOC>.+?<DOCNO>(.+?)</DOCNO>.+?<HEADLINE>(.+?)</HEADLINE>.+?<TEXT>(.+?)</TEXT>.+?</DOC>",
