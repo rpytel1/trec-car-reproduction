@@ -1,9 +1,6 @@
 package tutorial.index;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.en.KStemFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
@@ -12,7 +9,11 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import tutorial.utils.CustomAnalyzer;
+import tutorial.utils.TextFileFilter;
+import tutorial.utils.TextFileUtils;
 
+import javax.xml.soap.Text;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,17 +33,7 @@ public class ImprovedIndexer {
         Directory dir = FSDirectory.open(new File(indexDir).toPath());
 
 // Analyzer specifies options for text processing
-        Analyzer analyzer = new Analyzer() {
-            @Override
-            protected TokenStreamComponents createComponents(String fieldName) {
-                // Step 1: tokenization (Lucene's StandardTokenizer is suitable for most text retrieval occasions)
-                TokenStreamComponents ts = new TokenStreamComponents(new StandardTokenizer());
-                // Step 2: transforming all tokens into lowercased ones (recommended for the majority of the problems)
-                ts = new TokenStreamComponents(ts.getTokenizer(), new LowerCaseFilter(ts.getTokenStream()));
-                ts = new TokenStreamComponents( ts.getTokenizer(), new KStemFilter( ts.getTokenStream() ) );
-                return ts;
-            }
-        };
+        Analyzer analyzer = new CustomAnalyzer();
 
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
@@ -50,22 +41,10 @@ public class ImprovedIndexer {
         IndexWriter ixwriter = new IndexWriter(dir, config);
 
 // This is the field setting for metadata field.
-        FieldType fieldTypeMetadata = new FieldType();
-        fieldTypeMetadata.setOmitNorms(true);
-        fieldTypeMetadata.setIndexOptions(IndexOptions.DOCS);
-        fieldTypeMetadata.setStored(true);
-        fieldTypeMetadata.setTokenized(false);
-        fieldTypeMetadata.freeze();
+        FieldType fieldTypeMetadata = TextFileUtils.getFiledTypeMeta();
 
 // This is the field setting for normal text field.
-        FieldType fieldTypeText = new FieldType();
-        fieldTypeText.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
-        fieldTypeText.setStoreTermVectors(true);
-        fieldTypeText.setStoreTermVectorPositions(true);
-        fieldTypeText.setTokenized(true);
-        fieldTypeText.setStored(true);
-        fieldTypeText.freeze();
-
+        FieldType fieldTypeText = TextFileUtils.getFieldTypeText();
 
         File[] files = new File(corpusDir).listFiles();
 
@@ -82,9 +61,7 @@ public class ImprovedIndexer {
 
             Matcher matcher = pattern.matcher(corpusText);
 
-            while (matcher.find())
-
-            {
+            while (matcher.find()) {
 
                 String docno = matcher.group(1).trim();
                 String headline = matcher.group(2).trim();
