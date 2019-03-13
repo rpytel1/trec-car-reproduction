@@ -4,16 +4,13 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
-import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import tutorial.utils.CustomAnalyzer;
-import tutorial.utils.TextFileFilter;
 import tutorial.utils.TextFileUtils;
 
-import javax.xml.soap.Text;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,17 +19,26 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/**
+ * Class implementing process of indexing the corpus
+ */
 public class ImprovedIndexer {
 
     public ImprovedIndexer() {
 
     }
 
+    /**
+     * Method performing indexing the corpus by extracting it's content from TRECTEXT files and creating
+     * helpful fields in the index to later retrieve them in searching process
+     *
+     * @param indexDir
+     * @param corpusDir
+     * @throws IOException
+     */
     public void generateIndex(String indexDir, String corpusDir) throws IOException {
         Directory dir = FSDirectory.open(new File(indexDir).toPath());
 
-// Analyzer specifies options for text processing
         Analyzer analyzer = new CustomAnalyzer();
 
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
@@ -40,10 +46,8 @@ public class ImprovedIndexer {
 
         IndexWriter ixwriter = new IndexWriter(dir, config);
 
-// This is the field setting for metadata field.
         FieldType fieldTypeMetadata = TextFileUtils.getFiledTypeMeta();
 
-// This is the field setting for normal text field.
         FieldType fieldTypeText = TextFileUtils.getFieldTypeText();
 
         File[] files = new File(corpusDir).listFiles();
@@ -51,8 +55,11 @@ public class ImprovedIndexer {
         for (File file : files) {
             InputStream instream = new FileInputStream(file);
             Scanner s = new Scanner(instream).useDelimiter("\\A");
-            String corpusText = s.hasNext() ? s.next() : "";
-            instream.close();
+            StringBuilder stringBuilder = new StringBuilder();
+            while (s.hasNextLine()) {
+                stringBuilder.append(s.nextLine());
+            }
+            String corpusText = stringBuilder.toString();
 
             Pattern pattern = Pattern.compile(
                     "<DOC>.+?<DOCNO>(.+?)</DOCNO>.+?<HEADLINE>(.+?)</HEADLINE>.+?<TEXT>(.+?)</TEXT>.+?</DOC>",

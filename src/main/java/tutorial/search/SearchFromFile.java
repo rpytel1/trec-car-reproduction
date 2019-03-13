@@ -32,6 +32,11 @@ public class SearchFromFile {
         }
     }
 
+    /**
+     * Method extracting configuration parameters of the searching from file
+     * @param jsonObject
+     * @return
+     */
     static public Map<String, String> getFields(JSONObject jsonObject) {
         Map<String, String> map = new HashMap<>();
         map.put("index", jsonObject.getString("index"));
@@ -43,6 +48,11 @@ public class SearchFromFile {
         return map;
     }
 
+    /**
+     * Method extracting queries from configuration file. Some preprocessing from Galago format is performed.
+     * @param queriesJson
+     * @return
+     */
     static public List<QueryStruct> getQueries(JSONArray queriesJson) {
         List<QueryStruct> queries = new ArrayList<>();
         for (int i = 0; i < queriesJson.length(); i++) {
@@ -58,6 +68,16 @@ public class SearchFromFile {
         return queries;
     }
 
+    /**
+     * Method controlling which query expansion to perform. Used for performance proposes as it is more efficient to
+     *perform query expansion for the whole list instead of performing query expansion for each query separately
+     * @param queries
+     * @param improvedSearcher
+     * @param queryMode
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     static public List<QueryStruct> expandQueries(List<QueryStruct> queries, ImprovedSearcher improvedSearcher, String queryMode) throws IOException, InterruptedException {
         if (queryMode.equals("rm1")) {
             return improvedSearcher.expandQueryRM1List(queries);

@@ -3,6 +3,9 @@ package tutorial.utils;
 import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.search.similarities.SimilarityBase;
 
+/**
+ * Our implementation of Cosine Similarity ranking function.
+ */
 public class OwnTFIDFSimilarity extends SimilarityBase {
 
     @Override

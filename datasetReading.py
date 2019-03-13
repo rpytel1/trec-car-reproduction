@@ -66,7 +66,7 @@ def make_article_corpus(file):
     """
     i = 0
     for p in iter_annotations(open(file, 'rb')):
-        fp = r'article_test200_corpus\articleDoc' + str(i) + '.trectext'
+        fp = r'article_test200_corpus/articleDoc' + str(i) + '.trectext'
         wf = open(fp, 'wb')
         wf.write(b"<DOC>\n")
         wf.write(b"<DOCNO>")
@@ -90,7 +90,8 @@ def make_big_corpus(file):
         collection
     """
     global i
-    fp = r'train_big_corpus.trectext'
+    j=0
+    fp = r'train_big_corpus'+str(j)+'.trectext'
     wf = open(fp, 'wb')
     for p in iter_paragraphs(open(file, 'rb')):
         if p.para_id not in id_set.keys():
@@ -104,6 +105,12 @@ def make_big_corpus(file):
             wf.write(b"\n</TEXT>\n")
             wf.write(b"</DOC>\n\n")
             i += 1
+        if i >  70000:
+            wf.close()
+            i = 0
+            j+=1
+            fp = r'train_big_corpus'+str(j)+'.trectext'
+            wf = open(fp, 'wb')
         print(i)
     wf.close()
 

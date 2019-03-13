@@ -18,61 +18,45 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * This is a modern version of Rocchio which does not make use of the gamma (considering the (ona average) large size of irrelevant documents, this is probably a good idea).
+ * This is implementation of Rocchio algorithm according to modern manner without consideration of non relevant documents (no gamma parameter)
  */
 public class Rocchio {
-    /**
-     * Alpha weight (see the Rocchio algorithm)
-     */
-    private float alpha;
-    /**
-     * Beta weight (see the Rocchio algorithm)
-     */
-    private float beta;
-    /**
-     * Maximal number of terms of the new expanded query
-     */
-    private int termLimit = 10;
-    /**
-     * Maximal number of documents to be considered in the relevant index
-     */
-    private int documentLimit;
-    /**
-     * The target field for the search operation
-     */
-    private String targetField = "text";
 
-    /**
-     * The query builder, used to build the Lucene query for the expanded plain query
-     */
+    private float alpha;
+
+    private float beta;
+    private int termLimit = 10;
+    private String targetField = "text";
 
     public Rocchio(float alpha, float beta) {
         this.alpha = alpha;
         this.beta = beta;
     }
 
+    /**
+     * Method performing query expansion using Rocchio algorithm
+     * @param queryStruct query to be expanded
+     * @param relevantDocuments list of documents which are relevant to the query
+     * @return expanded query
+     * @throws IOException
+     * @throws InvalidDataException
+     */
     public QueryStruct expand(QueryStruct queryStruct, List<Document> relevantDocuments) throws IOException, InvalidDataException {
-        /* Get the set of words for the query */
         String query = queryStruct.getText();
         Set<String> queryTerms = new HashSet<>(Arrays.asList(query.split(" ")));
 
-        /* Get the frequency maps */
-        Directory index = generateRelevantDirectory(relevantDocuments, 10);
+        Directory index = generateRelevantDirectory(relevantDocuments, 20);
 
-        /* This (or part of this) will be the query vector */
         Map<String, Float> allTermFreq = extractTermFrequency(index);
         Map<String, Float> queryTermFreq = getTFIDF(index, queryTerms, targetField);
 
 
         for (Map.Entry<String, Float> term : queryTermFreq.entrySet()) {
-            /* Multiply the current entry with alpha */
             float modifiedFreq = term.getValue() * alpha;
 
-            /* Check if the entry exists in the allTermFreq; if it does extract the beta * TF-IDF */
             if (allTermFreq.containsKey(term.getKey()))
                 modifiedFreq += allTermFreq.get(term.getKey());
 
-            /* Update or introduce the term in the map */
             allTermFreq.put(term.getKey(), modifiedFreq);
         }
 
@@ -91,21 +75,22 @@ public class Rocchio {
         return queryStruct;
     }
 
-
+    /**
+     * Method extracting frequency for each word from the previously created index
+     * @param directory index
+     * @return dictionary of words and their corresponding frequencies
+     * @throws IOException
+     */
     private Map<String, Float> extractTermFrequency(Directory directory) throws IOException {
-        /* Declare the Map */
         Map<String, Float> frequencyMap = new HashMap<>();
 
-        /* Get the target field terms */
         IndexReader reader = DirectoryReader.open(directory);
         Fields fields = MultiFields.getFields(reader);
         Terms terms = fields.terms(targetField);
         TermsEnum termsEnum = terms.iterator();
 
-        /* Get the number of documents */
         int docNumber = reader.numDocs();
 
-        /* Declare the similarity which will allow us to compute the IDF */
         ClassicSimilarity similarity = new ClassicSimilarity();
 
         while (termsEnum.next() != null) {
@@ -124,15 +109,23 @@ public class Rocchio {
         return frequencyMap;
     }
 
+    /**
+     * Method creating index for relevant documents. Index is later used to retrieve characteristic of documments(e.g. term frequency)
+     * @param relevantDocuments
+     * @param documentLimit
+     * @return
+     * @throws IOException
+     * @throws InvalidDataException
+     */
     public static Directory generateRelevantDirectory(List<Document> relevantDocuments, int documentLimit) throws IOException, InvalidDataException {
 
         Analyzer analyzer = new CustomAnalyzer();
-        /* In-memory */
+
         Directory index = new RAMDirectory();
         IndexWriter indexWriter = new IndexWriter(index, new IndexWriterConfig(analyzer));
 
         FieldType fieldTypeText = TextFileUtils.getFieldTypeText();
-        /* Add the docs to the index */
+
         for (int i = 0; i < relevantDocuments.size() && i < documentLimit; ++i) {
             Document doc = relevantDocuments.get(i);
             String text = relevantDocuments.get(i).get("text");
@@ -142,25 +135,28 @@ public class Rocchio {
             indexWriter.addDocument(doc);
         }
 
-        /* Store the documents, and finalize the indexing process */
         indexWriter.close();
         return indexWriter.getDirectory();
     }
 
+    /**
+     * Method retrieving TFIDF map for all corresponding words in index provided
+     * @param directory index of all relevant documents
+     * @param tokens
+     * @param targetField
+     * @return
+     * @throws IOException
+     */
     public static Map<String, Float> getTFIDF(Directory directory, Set<String> tokens, String targetField) throws IOException {
-        /* Declare the Map */
         Map<String, Float> frequencyMap = new HashMap<>();
 
-        /* Get the target field terms */
         IndexReader reader = DirectoryReader.open(directory);
         Fields fields = MultiFields.getFields(reader);
         Terms terms = fields.terms(targetField);
         TermsEnum termsEnum = terms.iterator();
 
-        /* Get the number of documents */
         int docNumber = reader.numDocs();
 
-        /* Declare the similarity */
         ClassicSimilarity similarity = new ClassicSimilarity();
 
         while (termsEnum.next() != null)
@@ -169,11 +165,9 @@ public class Rocchio {
                 int docFreq = reader.docFreq(term);
                 long termFreq = reader.totalTermFreq(term);
 
-                /* Compute the TF-IDF */
                 frequencyMap.put(term.text(), termFreq * similarity.idf(docFreq, docNumber));
             }
 
-        /* Close the reader */
         reader.close();
 
         return frequencyMap;

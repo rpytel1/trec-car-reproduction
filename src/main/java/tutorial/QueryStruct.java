@@ -1,5 +1,8 @@
 package tutorial;
 
+/**
+ * Helper class to organize queries according to their number
+ */
 public class QueryStruct {
     String number;
     String text;

@@ -29,6 +29,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class performing searching process of the Search engine.
+ */
 public class ImprovedSearcher {
     IndexSearcher indexSearcher;
     int QUERY_LIMIT = LuceneConstants.CLASSIC_SEARCH_LIMIT;
@@ -52,6 +55,10 @@ public class ImprovedSearcher {
         this.K1 = k1;
     }
 
+    /**
+     * method defining which similarity measure is used to Rank the relevant documents by provided parameter
+     * @param similarityName
+     */
     private void configure(String similarityName) {
         switch (similarityName) {
             case "tfidf": {
@@ -69,6 +76,16 @@ public class ImprovedSearcher {
         }
     }
 
+    /**
+     * Method perforim RM1 query expansion process. Basically it delegates query expansion to Galago and retreives
+     * terms to extend the original query with 10 most frequent ones.
+     * Some performance hacks had to be added as Java limits maximum number of arguments and it is impossible to
+     * execute command for 5000 queries at once.
+     * @param queryStructList
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public List<QueryStruct> expandQueryRM1List(List<QueryStruct> queryStructList) throws IOException, InterruptedException {
         List<QueryStruct> toReturn = new ArrayList<>();
         Process proc;
@@ -115,6 +132,16 @@ public class ImprovedSearcher {
         return toReturn;
     }
 
+    /**
+     * Method perfoming query expansion using Rocchio algorithm. Logic of Rocchio algorithm is delegated to Rocchio class,
+     * however, it is crucial to firstly retrieve relevant documents to provide them to Rocchio class.
+     * We are using common parameters setup: alpha=1.0 , beta = 0.8.
+     * @param queryStruct
+     * @return
+     * @throws ParseException
+     * @throws IOException
+     * @throws InvalidDataException
+     */
     public QueryStruct expandQueryRCH(QueryStruct queryStruct) throws ParseException, IOException, InvalidDataException {
         Rocchio rocchio = new Rocchio(1.0f, 0.8f);
 
@@ -132,6 +159,16 @@ public class ImprovedSearcher {
         return rocchio.expand(queryStruct, relevantDocs);
     }
 
+    /**
+     * Method choosing which query expansion to perform based on the input parameter
+     * @param queryStruct
+     * @param type
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ParseException
+     * @throws InvalidDataException
+     */
     public QueryStruct expandQuery(QueryStruct queryStruct, String type) throws IOException, InterruptedException, ParseException, InvalidDataException {
         switch (type) {
             case "rch": {
@@ -143,6 +180,15 @@ public class ImprovedSearcher {
         }
     }
 
+    /**
+     * Method performing search based on the query. It outputs data in the form which is same as Galago's
+     * @param queryStruct
+     * @param mode
+     * @throws ParseException
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws InvalidDataException
+     */
     public void search(QueryStruct queryStruct, String mode) throws ParseException, IOException, InterruptedException, InvalidDataException {
         QueryStruct extendedQueryStruct = expandQuery(queryStruct, mode);
         Query query = parser.parse(QueryParser.escape(extendedQueryStruct.getText()));

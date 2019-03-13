@@ -5,6 +5,9 @@ import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.en.KStemFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 
+/**
+ * Our analyzer performs transformation to lowercase and as well Krovetz stemming.
+ */
 public class CustomAnalyzer extends Analyzer {
 
     @Override

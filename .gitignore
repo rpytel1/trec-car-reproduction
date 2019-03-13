@@ -205,3 +205,5 @@ hierarchical_test200_corpus_v2/
 runfile_paragraph
 runfile_paragraph_lucene
 index_Dir/
+train_queries_article.json
+train_queries_toplevel.json

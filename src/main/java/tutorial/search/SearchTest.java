@@ -20,9 +20,9 @@ public class SearchTest {
             queries.add(new QueryStruct("3", "bros"));
         }
         ImprovedSearcher improvedSearcher = new ImprovedSearcher("/Users/rafalpytel/Desktop/TU Delft/Q3&Q4/Information Retriveal/project/trec-car-reproduction/index_Dir", "tfidf", 10, 1.2f);
-        List<QueryStruct> extendedQueries = expandQueries(queries, improvedSearcher, "rm1");
+        List<QueryStruct> extendedQueries = expandQueries(queries, improvedSearcher, "rch");
         for (QueryStruct query : extendedQueries) {
-            improvedSearcher.search(query, "rm1");
+            improvedSearcher.search(query, "rch");
         }
     }
 
